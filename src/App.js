@@ -1,7 +1,6 @@
 import { RESULT_PATH } from './env'
 import axios from "axios";
 import React, { Component } from 'react';
-import './App.css';
 import MuiAlert from '@material-ui/lab/Alert';
 import { AppBar, Toolbar, Typography, Box, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@material-ui/core';
 import StarOutlined from '@material-ui/icons/StarOutlined';
