@@ -48,8 +48,8 @@ class App extends Component {
       result = <Alert severity="error">{this.state.errorMessage}</Alert>;
     } else if (this.state.rank.length > 0) {
       let index = 0;
-      const participants = this.state.rank.map(({ nickname, total, score }) => {
-        const scoreTxt = `Score: ${score}/${total}`;
+      const participants = this.state.rank.map(({ nickname, total, score, response_time }) => {
+        const scoreTxt = `[Score: ${score}/${total}] [ResponseTime: ${response_time/1000} second(s)]`;
         if(index === 0) {
           index++;
           return (<ListItem><ListItemAvatar><Avatar><StarOutlined color="secondary"/></Avatar></ListItemAvatar><ListItemText primary={nickname} secondary={scoreTxt} /></ListItem>);
