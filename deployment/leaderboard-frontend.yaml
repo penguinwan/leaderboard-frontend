@@ -55,7 +55,8 @@ Resources:
         DefaultRootObject: index.html
         Enabled: true
         Origins:
-        - DomainName: !GetAtt 'S3Bucket.DomainName'
+        - DomainName: 
+            !Join ['', [!Ref 'S3Bucket', '.s3.', !Ref 'AWS::Region', '.amazonaws.com']]
           Id: s3origin
           S3OriginConfig:
             OriginAccessIdentity: 

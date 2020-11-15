@@ -3,10 +3,10 @@ deploy_s3:
 	aws cloudformation package \
 		--region eu-central-1 \
 		--template-file deployment/leaderboard-frontend.yaml \
-		--output-template-file build/leaderboard-frontend.yaml \
+		--output-template-file target/leaderboard-frontend.yaml \
 		--s3-bucket com.penguinwan.deployment
 	aws --region eu-central-1 cloudformation deploy \
-		--template-file build/leaderboard-frontend.yaml \
+		--template-file target/leaderboard-frontend.yaml \
 		--stack-name leaderboard-frontend \
 		--no-fail-on-empty-changeset \
 		--capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
