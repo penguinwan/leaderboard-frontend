@@ -14,9 +14,13 @@ deploy_s3:
 rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
 file_targets=$(shell find build -mindepth 1 -maxdepth 3 -type f)
 
+.PHONY: build
+build:
+	npm run build
+
 .PHONY: $(file_targets) 
 $(file_targets):
 	aws s3api put-object --bucket com.penguinwan.leaderboard --content-type text/html --key $(shell echo $@ | sed 's/build\///') --body $@ &> /dev/null
 
 .PHONY: deploy_frontend
-deploy_frontend: $(file_targets)
+deploy_frontend: build $(file_targets)
