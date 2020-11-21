@@ -18,9 +18,18 @@ file_targets=$(shell find build -mindepth 1 -maxdepth 3 -type f)
 build:
 	npm run build
 
+find_url=$(shell aws cloudformation describe-stacks --stack-name api | grep 'OutputValue' | sed 's/OutputValue//g' | sed 's/[",: ]//g')	
+.PHONY: $(find_url)
+$(find_url):
+	cat src/env-template.js | sed -e 's/{id}/$@/g' > src/env.js
+
+.PHONY: replace_api_url
+replace_api_url: $(find_url)
+
 .PHONY: $(file_targets) 
 $(file_targets):
 	aws s3api put-object --bucket com.penguinwan.leaderboard --content-type text/html --key $(shell echo $@ | sed 's/build\///') --body $@ &> /dev/null
+	sleep 1
 
 .PHONY: deploy_frontend
-deploy_frontend: build $(file_targets)
+deploy_frontend: replace_api_url build $(file_targets)
