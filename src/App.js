@@ -1,73 +1,51 @@
-import { RESULT_PATH } from './env'
-import axios from "axios";
 import React, { Component } from 'react';
-import MuiAlert from '@material-ui/lab/Alert';
-import { AppBar, Toolbar, Typography, Box, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import StarOutlined from '@material-ui/icons/StarOutlined';
-import StarRateOutlinedIcon from '@material-ui/icons/StarRateOutlined';
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import AddIcon from '@material-ui/icons/Add';
+import Leaderboard from './Leaderboard';
+import Question from './Question';
 
 class App extends Component {
   constructor(props) {
     super(props);
+    this.handleBottomNavigationChanged = this.handleBottomNavigationChanged.bind(this);
     this.state = {
-      rank: [],
-      isError: false,
-      errorMessage: null
-    };
+      showLeaderboard: false,
+      showQuestionBank: false
+    }
   }
-
-  componentDidMount() {
-    axios.get(
-      `${RESULT_PATH}/leaderboard`, {}
-    ).then((response) => {
-      this.setState({
-        rank: response.data.rank,
-        isError: false,
-        errorMessage: null
-      });
-    }).catch((error) => {
-      let errorMessage = 'Internal server error.'
-      if (error.response.status === 403) {
-        errorMessage = 'You have submitted answer before.'
-      }
+  
+  handleBottomNavigationChanged(event, newValue) {
+    if (newValue === 0) {
       this.setState({
         ...this.state,
-        isError: true,
-        errorMessage
-      })
-    })
-  }
-  render() {
-    let result;
-    if (this.state.isError) {
-      result = <Alert severity="error">{this.state.errorMessage}</Alert>;
-    } else if (this.state.rank.length > 0) {
-      let index = 0;
-      const participants = this.state.rank.map(({ nickname, total, score, response_time }) => {
-        const scoreTxt = `[Score: ${score}/${total}] [ResponseTime: ${response_time/1000} second(s)]`;
-        if(index === 0) {
-          index++;
-          return (<ListItem><ListItemAvatar><Avatar><StarOutlined color="secondary"/></Avatar></ListItemAvatar><ListItemText primary={nickname} secondary={scoreTxt} /></ListItem>);
-        } else {
-          return (<ListItem><ListItemAvatar><Avatar><StarRateOutlinedIcon/></Avatar></ListItemAvatar><ListItemText primary={nickname} secondary={scoreTxt} /></ListItem>);
-        }
+        showLeaderboard: true,
+        showQuestionBank: false
       });
-      result = <List>{participants}</List>
+    } else if (newValue === 1) {
+      this.setState({
+        ...this.state,
+        showLeaderboard: false,
+        showQuestionBank: true
+      })
     }
+  }
+
+  render() {
     return (
       <div>
-        <AppBar position="static">
-        <Toolbar>
-        <Typography variant="h6">Leaderboard</Typography>
-        </Toolbar>
-        </AppBar>
-        <Box textAlign="left" boxShadow={1} p={2} b={3}><Paper elevation={3}>{result}</Paper></Box>
-        </div>
+        { this.state.showLeaderboard && <Leaderboard />}
+        { this.state.showQuestionBank && <Question />}
+
+        <Box boxShadow={2} p={1} b={1}>
+          <BottomNavigation value={this.bottomNavigationValue} onChange={this.handleBottomNavigationChanged} showLabels>
+            <BottomNavigationAction label="Leaderboard" icon={<StarOutlined />} />
+            <BottomNavigationAction label="Question Bank" icon={<AddIcon />} />
+          </BottomNavigation>
+        </Box>
+      </div>
     );
   }
 }

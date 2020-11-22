@@ -15,6 +15,12 @@ app.get('/leaderboard', async (req, res) => {
   });
 })
 
+app.put('/batches', async (req, res) => {
+  console.log('data', JSON.stringify(req.body));
+  res.sendStatus(200);
+  // res.sendStatus(500);
+})
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
