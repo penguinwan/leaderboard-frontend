@@ -15,7 +15,7 @@ app.get('/leaderboard', async (req, res) => {
   });
 })
 
-app.post('/questions', async (req, res) => {
+app.put('/batches', async (req, res) => {
   console.log('data', JSON.stringify(req.body));
   res.sendStatus(200);
   // res.sendStatus(500);
