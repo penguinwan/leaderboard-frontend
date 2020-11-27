@@ -2,7 +2,7 @@ import { RESULT_PATH } from './env'
 import axios from "axios";
 import React, { Component } from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
-import { AppBar, Toolbar, Typography, Box, List, ListItem, ListItemText, ListItemAvatar, Avatar } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Box, List, ListItem, ListItemText, ListItemAvatar, Avatar, FormControlLabel, Switch, Grid } from '@material-ui/core';
 import StarOutlined from '@material-ui/icons/StarOutlined';
 import StarRateOutlinedIcon from '@material-ui/icons/StarRateOutlined';
 
@@ -14,14 +14,33 @@ function Alert(props) {
 class Leaderboard extends Component {
   constructor(props) {
     super(props);
+    this.refreshInterval = null;
+    this.handleAutoRefreshChange = this.handleAutoRefreshChange.bind(this);
+    this.fetchLeaderboard = this.fetchLeaderboard.bind(this);
     this.state = {
       rank: [],
       isError: false,
-      errorMessage: null
+      errorMessage: null,
+      isAutoRefreshChecked: false
     };
   }
 
-  componentDidMount() {
+  handleAutoRefreshChange(event) {
+    if(event.target.checked) {
+      this.refreshInterval = setInterval(() => {
+        this.fetchLeaderboard();
+      }, 6000)
+    } else {
+      clearInterval(this.refreshInterval);
+    }
+    
+    this.setState({
+      ...this.state,
+      isAutoRefreshChecked: event.target.checked
+    });
+  }
+
+  fetchLeaderboard() {
     axios.get(
       `${RESULT_PATH}/leaderboard`, {}
     ).then((response) => {
@@ -42,6 +61,11 @@ class Leaderboard extends Component {
       })
     })
   }
+
+  componentDidMount() {
+    this.fetchLeaderboard();
+  }
+
   render() {
     let result;
     if (this.state.isError) {
@@ -63,7 +87,18 @@ class Leaderboard extends Component {
       <div>
         <AppBar position="static">
         <Toolbar>
-        <Typography variant="h6">Leaderboard</Typography>
+          <Grid container>
+          <Grid item xs={6}>
+          <Typography variant="h6">Leaderboard</Typography>
+          </Grid>
+          <Grid item xs={6}>
+        <FormControlLabel
+          control={
+            <Switch checked={this.state.isAutoRefreshChecked} onChange={this.handleAutoRefreshChange} name="autorefresh" color="secondary"/>
+          }
+          label="Auto-refresh"/>
+        </Grid>
+        </Grid>
         </Toolbar>
         </AppBar>
         <Box textAlign="left" boxShadow={4} p={4} b={4}>{result}</Box>
