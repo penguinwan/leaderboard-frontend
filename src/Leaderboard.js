@@ -66,6 +66,10 @@ class Leaderboard extends Component {
     this.fetchLeaderboard();
   }
 
+  componentWillUnmount() {
+    clearInterval(this.refreshInterval);
+  }
+
   render() {
     let result;
     if (this.state.isError) {
