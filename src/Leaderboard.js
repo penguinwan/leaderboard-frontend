@@ -1,4 +1,4 @@
-import { RESULT_PATH } from './env'
+import { PATH } from './env'
 import axios from "axios";
 import React, { Component } from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -42,7 +42,7 @@ class Leaderboard extends Component {
 
   fetchLeaderboard() {
     axios.get(
-      `${RESULT_PATH}/leaderboard`, {}
+      `${PATH}/leaderboard`, {}
     ).then((response) => {
       this.setState({
         rank: response.data.rank,

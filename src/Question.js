@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { AppBar, Toolbar, Typography, Box, Input, Button, Snackbar, List, ListItem, Grid, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import axios from 'axios';
-import { QUESTION_PATH } from './env'
+import { PATH } from './env'
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -91,8 +91,8 @@ class Question extends Component {
         answers: Object.keys(this.state.answers).map((key) => { return { key: key, value: this.state.answers[key] } }),
         correct: this.state.correct
       }
-      axios.put(
-        `${QUESTION_PATH}/batches`,
+      axios.post(
+        `${PATH}/batches/bank/questions`,
         data
       ).then((response) => {
         this.setState({
@@ -141,16 +141,16 @@ class Question extends Component {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="h6">Question</Typography>
-              <Input required="true" label="Question" multiline rowMax={4} placeholder="Type your question here" value={this.state.question} onChange={this.handleQuestionChange} fullWidth variant="outlined" />
+              <Input required="true" label="Question" multiline rowMax={4} placeholder="Type your question here" value={this.state.question} onChange={this.handleQuestionChange} fullWidth variant="outlined" autoComplete="off"/>
             </Grid>
             <Grid item xs={12}>
               <Typography variant="h6">Answer</Typography>
               <div>
                 <List>
-                  <ListItem>A&nbsp;<Input id="a" key="a" label="Answer A" value={this.state.answers.a} variant="outlined" onChange={this.handleAnswerChange} /></ListItem>
-                  <ListItem>B&nbsp;<Input id="b" key="b" label="Answer B" value={this.state.answers.b} variant="outlined" onChange={this.handleAnswerChange} /></ListItem>
-                  <ListItem>C&nbsp;<Input id="c" key="c" label="Answer C" value={this.state.answers.c} variant="outlined" onChange={this.handleAnswerChange} /></ListItem>
-                  <ListItem>D&nbsp;<Input id="d" key="d" label="Answer D" value={this.state.answers.d} variant="outlined" onChange={this.handleAnswerChange} /></ListItem>
+                  <ListItem>A&nbsp;<Input id="a" key="a" label="Answer A" value={this.state.answers.a} variant="outlined" onChange={this.handleAnswerChange} autoComplete="off"/></ListItem>
+                  <ListItem>B&nbsp;<Input id="b" key="b" label="Answer B" value={this.state.answers.b} variant="outlined" onChange={this.handleAnswerChange} autoComplete="off"/></ListItem>
+                  <ListItem>C&nbsp;<Input id="c" key="c" label="Answer C" value={this.state.answers.c} variant="outlined" onChange={this.handleAnswerChange} autoComplete="off"/></ListItem>
+                  <ListItem>D&nbsp;<Input id="d" key="d" label="Answer D" value={this.state.answers.d} variant="outlined" onChange={this.handleAnswerChange} autoComplete="off"/></ListItem>
                 </List>
               </div>
             </Grid>
@@ -166,10 +166,10 @@ class Question extends Component {
             </Grid>
           </Grid>
         </Box>
-        <Snackbar open={this.state.isSuccess} autoHideDuration={2000} onClose={this.handleSnackbarClose}>
+        <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "center" }} open={this.state.isSuccess} autoHideDuration={2000} onClose={this.handleSnackbarClose}>
           <Alert onClose={this.handleSnackbarClose} severity="success">Success!</Alert>
         </Snackbar>
-        <Snackbar open={this.state.isError} autoHideDuration={2000} onClose={this.handleSnackbarClose}>
+        <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "center" }} open={this.state.isError} autoHideDuration={2000} onClose={this.handleSnackbarClose}>
           <Alert onClose={this.handleSnackbarClose} severity="error">{this.state.errorMessage}</Alert>
         </Snackbar>
       </div>

@@ -15,8 +15,15 @@ app.get('/leaderboard', async (req, res) => {
   });
 })
 
-app.put('/batches', async (req, res) => {
+app.put('/batches/:batchId', async (req, res) => {
+  console.log('params', JSON.stringify(req.params['batchId']));
+  res.sendStatus(200);
+  // res.sendStatus(500);
+})
+
+app.post('/batches/:batchId/questions', async (req, res) => {
   console.log('data', JSON.stringify(req.body));
+  console.log('params', JSON.stringify(req.params['batchId']));
   res.sendStatus(200);
   // res.sendStatus(500);
 })
