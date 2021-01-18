@@ -26,6 +26,11 @@ $(find_url):
 .PHONY: replace_api_url
 replace_api_url: $(find_url)
 
+.PHONY: replace_credential
+replace_credential:
+	cat src/env-template.js | sed -e 's/{username}/${LEADERBOARD_USERNAME}/g' > src/env.js
+	cat src/env-template.js | sed -e 's/{password}/${LEADERBOARD_PASSWORD}/g' > src/env.js
+
 TYPE_.html=text/html
 TYPE_.json=application/json
 TYPE_.js=text/javascript
@@ -36,4 +41,4 @@ $(file_targets):
 	aws s3api put-object --bucket com.penguinwan.leaderboard --content-type $(TYPE_$(suffix $@)) --key $(shell echo $@ | sed 's/build\///') --body $@ &> /dev/null
 
 .PHONY: deploy_frontend
-deploy_frontend: replace_api_url build $(file_targets)
+deploy_frontend: replace_api_url replace_credential build $(file_targets)

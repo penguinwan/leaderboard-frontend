@@ -62,6 +62,10 @@ class Leaderboard extends Component {
     })
   }
 
+  mask(value) {
+    return value.charAt(0).padEnd(value.length-1, '*') + value.charAt(value.length-1);
+  }
+
   componentDidMount() {
     this.fetchLeaderboard();
   }
@@ -78,11 +82,11 @@ class Leaderboard extends Component {
       let index = 0;
       const participants = this.state.rank.map(({ nickname, total, score, response_time }) => {
         const scoreTxt = `[Score: ${score}/${total}] [ResponseTime: ${response_time/1000} second(s)]`;
-        if(index === 0) {
+        if(index === 0 || index === 1 || index === 2) {
           index++;
           return (<ListItem><ListItemAvatar><Avatar><StarOutlined color="secondary"/></Avatar></ListItemAvatar><ListItemText primary={nickname} secondary={scoreTxt} /></ListItem>);
         } else {
-          return (<ListItem><ListItemAvatar><Avatar><StarRateOutlinedIcon/></Avatar></ListItemAvatar><ListItemText primary={nickname} secondary={scoreTxt} /></ListItem>);
+          return (<ListItem><ListItemAvatar><Avatar><StarRateOutlinedIcon/></Avatar></ListItemAvatar><ListItemText primary={this.mask(nickname)} secondary={scoreTxt} /></ListItem>);
         }
       });
       result = <List>{participants}</List>
