@@ -21,15 +21,10 @@ build:
 find_url=$(shell aws cloudformation describe-stacks --stack-name api | grep 'OutputValue' | sed 's/OutputValue//g' | sed 's/[",: ]//g')	
 .PHONY: $(find_url)
 $(find_url):
-	cat src/env-template.js | sed -e 's/{id}/$@/g' > src/env.js
+	cat src/env-template.js | sed -e 's/{id}/$@/g' | sed -e 's/{username}/${LEADERBOARD_USERNAME}/g' | sed -e 's/{password}/${LEADERBOARD_PASSWORD}/g'> src/env.js
 
-.PHONY: replace_api_url
-replace_api_url: $(find_url)
-
-.PHONY: replace_credential
-replace_credential:
-	cat src/env-template.js | sed -e 's/{username}/${LEADERBOARD_USERNAME}/g' > src/env.js
-	cat src/env-template.js | sed -e 's/{password}/${LEADERBOARD_PASSWORD}/g' > src/env.js
+.PHONY: replace_env
+replace_env: $(find_url)
 
 TYPE_.html=text/html
 TYPE_.json=application/json
@@ -41,4 +36,4 @@ $(file_targets):
 	aws s3api put-object --bucket com.penguinwan.leaderboard --content-type $(TYPE_$(suffix $@)) --key $(shell echo $@ | sed 's/build\///') --body $@ &> /dev/null
 
 .PHONY: deploy_frontend
-deploy_frontend: replace_api_url replace_credential build $(file_targets)
+deploy_frontend: replace_env build $(file_targets)
